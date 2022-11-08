@@ -255,10 +255,12 @@ class Issues(Stream):
         page_num_offset = [self.tap_stream_id, "offset", "page_num"]
 
         last_updated = Context.update_start_date_bookmark(updated_bookmark)
+        LOGGER.info(f"PN LAST UPDATED: {last_updated}")
         timezone = Context.retrieve_timezone()
         start_date = last_updated.astimezone(pytz.timezone(timezone)).strftime("%Y-%m-%d %H:%M")
 
         jql = "updated >= '{}' order by updated asc".format(start_date)
+        LOGGER.info(f"PN JQL: {jql}")
         params = {"fields": "*all",
                   "expand": "changelog,transitions",
                   "validateQuery": "strict",
@@ -284,6 +286,7 @@ class Issues(Stream):
 
             # Grab last_updated before transform in write_page
             last_updated = utils.strptime_to_utc(page[-1]["fields"]["updated"])
+            LOGGER.info(f"PN LAST UPDATED 2: {last_updated}")
 
             self.write_page(page)
 
